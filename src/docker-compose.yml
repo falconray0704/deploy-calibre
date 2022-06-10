@@ -1,0 +1,36 @@
+version: '3'
+services:
+  calibre:
+    image: lscr.io/linuxserver/calibre:${CALIBRE_VERSION:-latest}
+    container_name: calibre
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=Asia/Shanghai
+      - PASSWORD=${CALIBRE_PASSWORD:-password}
+        #      - CLI_ARGS= #optional
+    volumes:
+      - ${CALIBRE_APP_ROOT:-./calibre/app}/datas:/config
+      - ${CALIBRE_WEB_DOWNLOAD_DIR:-./calibre/downloads}:/calibre_downloads
+    ports:
+      - 29080:8080
+      - 29081:8081
+    restart: unless-stopped
+
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web
+    container_name: calibre-web
+    depends_on:
+      - calibre
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=Asia/Shanghai
+    volumes:
+      - ${CALIBRE_WEB_ROOT:-./calibre/web}/datas:/config
+      - ${CALIBRE_APP_ROOT:-./calibre/app}/datas/${CALIBRE_WEB_LIB_DIR}:/books
+      - ${CALIBRE_WEB_DOWNLOAD_DIR:-./calibre/downloads}:/calibre_downloads
+    ports:
+      - 29083:8083
+    restart: unless-stopped
+
