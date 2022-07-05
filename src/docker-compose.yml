@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
 
   calibre-web:
-    image: lscr.io/linuxserver/calibre-web
+    image: lscr.io/linuxserver/calibre-web:${CALIBRE_WEB_VERSION:-latest}
     container_name: calibre-web
     depends_on:
       - calibre
